@@ -1,0 +1,40 @@
+# DEFAULT SWAGREET CONFIGURATION
+
+### ASSETS
+
+# directory containing the assets (CSS, icons, and the background image)
+assets_dir = "/etc/greetd/swagreet/assets"
+
+### MAXIMUM ATTEMPTS
+
+# maximum attempts before the user has to wait for the timeout
+# - e.g. 3 means the user is locked out after failing to enter the correct password 3 times
+# - use 0 to disable
+maximum_attempts = 3
+
+# how long the user has to wait after failing the password check too many times
+maximum_attempts_timeout_seconds = 60
+
+### MONITORS
+
+# the priortiy of monitors the login window should be shown on
+# - values further in the list will be used if earlier ones are not available.
+# - other monitors will still show the background image
+monitor_order = ["WL-1", "DP-1", "HDMI-A-1"]
+
+### SESSIONS
+
+# sessions which will be shown in the sessions menu
+sessions = [
+    { name = "Hyprland", icon_name =  "hyprland-logo", command = ["Hyprland"], env = [] },
+    { name = "GNOME", icon_name = "gnome-logo", command = ["gnome-session"], env = ["XDG_SESSION_TYPE=wayland"] }
+]
+
+### USERS
+
+# Leave commented if you want to automatically detect AccountService users
+
+# users = [
+#     { name = "example_1", avatar_path = "/path/to/avatar_1.png" },
+#     { name = "example_2", avatar_path = "/path/to/avatar_2.png" },
+# ]

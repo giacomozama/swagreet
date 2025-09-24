@@ -1,0 +1,119 @@
+* {
+    color: white;
+    font-family: Hanken Grotesk;
+    font-weight: 400;
+}
+
+window {
+    background: var(--bg-url);
+    background-size: cover;
+}
+
+BoxBackground {
+    filter: blur(36px);
+    margin: -72px;
+    transition: opacity 1s linear;
+    min-width: 144px;
+    min-height: 144px;
+}
+
+BoxBackgroundContainer {
+    border-radius: 36px;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+button,
+entry {
+    padding: 0 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    font-size: 18px;
+    font-weight: 400;
+    outline: none;
+    min-height: 52px;
+    box-shadow: inset 0 0 4px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+button.pill,
+entry.pill {
+    border-radius: 100px;
+}
+
+button:hover,
+entry:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+button:active,
+entry:active {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+entry:focus,
+entry:focus-within {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+ContentBox {
+    padding: 36px 0;
+    border-radius: 36px;
+    box-shadow: inset 0 0 6px 0 rgba(255, 255, 255, 0.4);
+}
+
+.logo {
+    margin: 24px 0 0 0;
+    opacity: 0.75;
+}
+
+.user-item {
+    padding-right: 40px;
+    min-height: 64px;
+}
+
+.user-item .avatar {
+    border-radius: 9999px;
+    background-size: contain;
+    box-shadow: inset 0 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.session-item {
+    padding: 0 32px 0 8px;
+    min-height: 56px;
+}
+
+.login-form,
+.choose-user,
+.choose-session {
+    padding: 0 36px;
+}
+
+separator {
+    margin: 4px 0;
+    min-width: 4px;
+    min-height: 4px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.bottom-buttons-row {
+    padding: 0 36px;
+}
+
+.bottom-buttons-row .button-container {
+    -gtk-icon-size: 25px;
+    font-size: 14px;
+}
+
+.bottom-buttons-row .button-container label {
+    font-weight: 500;
+}
+
+.bottom-buttons-row .button-container button {
+    border-radius: 500px;
+    min-width: 40px;
+    min-height: 40px;
+    margin-bottom: 8px;
+    padding: 12px;
+}
