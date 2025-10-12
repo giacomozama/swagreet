@@ -1,6 +1,6 @@
 # swagreet
 
-swagreet is an aesthetics-focused graphical greetd greeter written in Rust using GTK4 and Realm4.
+swagreet is an aesthetics-focused graphical greetd greeter written in Rust using GTK4 and Relm4.
 
 ## Installation
 

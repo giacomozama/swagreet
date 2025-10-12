@@ -381,6 +381,14 @@ pub fn content_box(main_stack: &gtk::Stack) -> gtk::Box {
 
     bottom_buttons_row.append(&suspend_button);
 
+    let restart_button = bottom_button(
+        "system-reboot-symbolic",
+        "Restart",
+        &["/bin/reboot".to_owned()],
+    );
+
+    bottom_buttons_row.append(&restart_button);
+
     let shutdown_button = bottom_button(
         "system-shutdown-symbolic",
         "Shutdown",
@@ -397,6 +405,7 @@ pub fn content_box(main_stack: &gtk::Stack) -> gtk::Box {
 pub fn background_widget(config: &Config, monitor: &Monitor) -> gtk::Box {
     let container = gtk::Box::builder()
         .css_name("BoxBackgroundContainer")
+        .layout_manager(&gtk::BinLayout::new())
         .overflow(gtk::Overflow::Hidden)
         .build();
 
@@ -424,6 +433,14 @@ pub fn background_widget(config: &Config, monitor: &Monitor) -> gtk::Box {
         cr.set_source_surface(surface, x, y).unwrap();
         cr.paint().unwrap();
     });
+
+    let background_overlay = gtk::Box::builder()
+        .css_name("BoxBackgroundOverlay")
+        .vexpand(true)
+        .hexpand(true)
+        .build();
+
+    container.append(&background_overlay);
 
     container
 }
