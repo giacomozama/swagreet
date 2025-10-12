@@ -1,17 +1,11 @@
-use crate::model::{
-    self,
-    model::{AppAction, AppModel, Config, LoginState, MainStackPage, Session, User},
-};
+use crate::model::model::{AppAction, AppModel, Config, LoginState, MainStackPage, Session, User};
 
 use gtk::{gdk::Monitor, prelude::*};
-use std::process::Command;
 
-pub fn login_button_stack(too_many_attempts_label: &gtk::Label) -> gtk::Stack {
-    let login_button_stack = gtk::Stack::builder()
-        .transition_type(gtk::StackTransitionType::Crossfade)
-        .transition_duration(125)
-        .build();
-
+pub fn setup_login_button_stack(
+    login_button_stack: &gtk::Stack,
+    too_many_attempts_label: &gtk::Label,
+) {
     login_button_stack.add_named(&gtk::Label::new(Some("Login")), Some("login"));
 
     login_button_stack.add_named(&gtk::Label::new(Some("Please wait…")), Some("logging_in"));
@@ -44,8 +38,6 @@ pub fn login_button_stack(too_many_attempts_label: &gtk::Label) -> gtk::Stack {
     login_button_stack.add_named(too_many_attempts_label, Some("too_many_attempts"));
 
     login_button_stack.set_visible_child_name("login");
-
-    login_button_stack
 }
 
 pub fn login_state_page_name(state: &LoginState) -> String {
@@ -109,86 +101,11 @@ pub fn user_item(avatar: &gtk::Box, label: &gtk::Label) -> gtk::Box {
     container
 }
 
-pub fn login_button(
-    login_button_stack: &gtk::Stack,
-    sender: &relm4::ComponentSender<AppModel>,
-) -> gtk::Button {
-    let button = gtk::Button::builder()
-        .css_classes(["login-button", "pill"])
-        .sensitive(true) // canLogin
-        .cursor(&pointer_cursor())
-        .child(login_button_stack)
-        .build();
-
-    let sender_clone = sender.clone();
-    button.connect_clicked(move |_| {
-        sender_clone.input(AppAction::ChangeLoginState(
-            model::model::LoginState::LoggingIn,
-        ));
-    });
-
-    button
-}
-
 fn pointer_cursor() -> gtk::gdk::Cursor {
     gtk::gdk::Cursor::from_name("pointer", None).unwrap()
 }
 
-fn vertical_spacer() -> gtk::Box {
-    gtk::Box::builder().vexpand(true).build()
-}
-
-fn separator() -> gtk::Box {
-    gtk::Box::builder()
-        .css_name("separator")
-        .halign(gtk::Align::Center)
-        .build()
-}
-
-pub fn session_button(
-    session_item: &gtk::Box,
-    sender: &relm4::ComponentSender<AppModel>,
-) -> gtk::Button {
-    let button = gtk::Button::builder()
-        .css_classes(["pill"])
-        .sensitive(true) // canLogin
-        .cursor(&pointer_cursor())
-        .child(session_item)
-        .build();
-
-    let sender_clone = sender.clone();
-    button.connect_clicked(move |_| {
-        sender_clone.input(AppAction::ChangeMainStackPage(MainStackPage::ChooseSession));
-    });
-
-    button
-}
-
-pub fn user_button(user_item: &gtk::Box, sender: &relm4::ComponentSender<AppModel>) -> gtk::Button {
-    let button = gtk::Button::builder()
-        .css_classes(["pill"])
-        .sensitive(true) // canLogin
-        .cursor(&pointer_cursor())
-        .child(user_item)
-        .build();
-
-    let sender_clone = sender.clone();
-    button.connect_clicked(move |_| {
-        sender_clone.input(AppAction::ChangeMainStackPage(MainStackPage::ChooseUser));
-    });
-
-    button
-}
-
-pub fn password_entry(sender: &relm4::ComponentSender<AppModel>) -> gtk::PasswordEntry {
-    let entry = gtk::PasswordEntry::builder()
-        .css_classes(["pill"])
-        .sensitive(true) // canLogin
-        .placeholder_text("Password")
-        .hexpand(true)
-        .xalign(0.5)
-        .build();
-
+pub fn setup_password_entry(entry: &gtk::PasswordEntry, sender: &relm4::ComponentSender<AppModel>) {
     let sender_clone_notify_text = sender.clone();
     entry.connect_text_notify(move |e| {
         sender_clone_notify_text.input(AppAction::UpdatePassword(e.text().to_string().to_owned()))
@@ -202,30 +119,6 @@ pub fn password_entry(sender: &relm4::ComponentSender<AppModel>) -> gtk::Passwor
     entry.connect_activate(move |_| {
         sender_clone_activate.input(AppAction::ChangeLoginState(LoginState::LoggingIn));
     });
-
-    entry
-}
-
-pub fn login_form(
-    session_button: &gtk::Button,
-    user_button: &gtk::Button,
-    password_entry: &gtk::PasswordEntry,
-    login_button: &gtk::Button,
-) -> gtk::Box {
-    let container = gtk::Box::builder()
-        .css_classes(["login-form"])
-        .orientation(gtk::Orientation::Vertical)
-        .spacing(12)
-        .build();
-
-    container.append(session_button);
-    container.append(&separator());
-    container.append(user_button);
-    container.append(password_entry);
-    container.append(&separator());
-    container.append(login_button);
-
-    container
 }
 
 fn choose_session_form(
@@ -260,9 +153,9 @@ fn choose_session_form(
     container
 }
 
-fn choose_user_form(users: &[User], sender: &relm4::ComponentSender<AppModel>) -> gtk::Box {
+fn choose_user_page(users: &[User], sender: &relm4::ComponentSender<AppModel>) -> gtk::Box {
     let container = gtk::Box::builder()
-        .css_classes(["choose-session"])
+        .css_classes(["choose-user"])
         .orientation(gtk::Orientation::Vertical)
         .valign(gtk::Align::Center)
         .spacing(12)
@@ -289,53 +182,20 @@ fn choose_user_form(users: &[User], sender: &relm4::ComponentSender<AppModel>) -
     container
 }
 
-fn bottom_button(icon_name: &str, label: &str, cmd: &[String]) -> gtk::Box {
-    let container = gtk::Box::builder()
-        .css_classes(["button-container"])
-        .orientation(gtk::Orientation::Vertical)
-        .build();
-
-    let button = gtk::Button::builder()
-        .cursor(&pointer_cursor())
-        .icon_name(icon_name)
-        .halign(gtk::Align::Center)
-        .build();
-
-    let cmd = cmd.to_owned();
-    button.connect_clicked(move |_| {
-        Command::new(&cmd[0])
-            .args(&cmd[1..])
-            .output()
-            .expect("Failed to execute command");
-    });
-
-    container.append(&button);
-    container.append(&gtk::Label::new(Some(label)));
-
-    container
-}
-
-pub fn main_stack(
+pub fn setup_main_stack(
+    main_stack: &gtk::Stack,
     sessions: &[Session],
     users: &[User],
-    login_form: &gtk::Box,
     sender: &relm4::ComponentSender<AppModel>,
-) -> gtk::Stack {
-    let stack = gtk::Stack::builder()
-        .transition_type(gtk::StackTransitionType::Crossfade)
-        .transition_duration(125)
-        .build();
-
-    stack.add_named(
+) {
+    main_stack.add_named(
         &choose_session_form(sessions, sender),
         Some("choose-session"),
     );
-    stack.add_named(login_form, Some("login"));
-    stack.add_named(&choose_user_form(users, sender), Some("choose-user"));
 
-    stack.set_visible_child_name("login");
+    main_stack.add_named(&choose_user_page(users, sender), Some("choose-user"));
 
-    stack
+    main_stack.set_visible_child_name("login");
 }
 
 pub fn main_stack_page_name(page: &MainStackPage) -> String {
@@ -347,80 +207,15 @@ pub fn main_stack_page_name(page: &MainStackPage) -> String {
     .to_owned()
 }
 
-pub fn content_box(main_stack: &gtk::Stack) -> gtk::Box {
-    let container = gtk::Box::builder()
-        .css_name("ContentBox")
-        .orientation(gtk::Orientation::Vertical)
-        .vexpand(true)
-        .hexpand(true)
-        .build();
-
-    let logo_image = gtk::Image::builder()
-        .css_classes(["logo"])
-        .icon_name("main-logo")
-        .pixel_size(72)
-        .build();
-
-    container.append(&logo_image);
-    container.append(&vertical_spacer());
-    container.append(main_stack);
-    container.append(&vertical_spacer());
-
-    let bottom_buttons_row = gtk::Box::builder()
-        .css_classes(["bottom-buttons-row"])
-        .spacing(24)
-        .halign(gtk::Align::End)
-        .hexpand(true)
-        .build();
-
-    let suspend_button = bottom_button(
-        "system-suspend-symbolic",
-        "Suspend",
-        &["/bin/systemctl".to_owned(), "suspend".to_owned()],
-    );
-
-    bottom_buttons_row.append(&suspend_button);
-
-    let restart_button = bottom_button(
-        "system-reboot-symbolic",
-        "Restart",
-        &["/bin/reboot".to_owned()],
-    );
-
-    bottom_buttons_row.append(&restart_button);
-
-    let shutdown_button = bottom_button(
-        "system-shutdown-symbolic",
-        "Shutdown",
-        &["/bin/shutdown".to_owned(), "now".to_owned()],
-    );
-
-    bottom_buttons_row.append(&shutdown_button);
-
-    container.append(&bottom_buttons_row);
-
-    container
-}
-
-pub fn background_widget(config: &Config, monitor: &Monitor) -> gtk::Box {
-    let container = gtk::Box::builder()
-        .css_name("BoxBackgroundContainer")
-        .layout_manager(&gtk::BinLayout::new())
-        .overflow(gtk::Overflow::Hidden)
-        .build();
-
-    let drawing_area = gtk::DrawingArea::builder()
-        .css_name("BoxBackground")
-        .vexpand(true)
-        .hexpand(true)
-        .build();
-
-    container.append(&drawing_area);
-
+pub fn setup_background_drawing_area(
+    drawing_area: &gtk::DrawingArea,
+    config: &Config,
+    monitor: &Monitor,
+) {
     let screen_width = monitor.geometry().width() as f64;
     let screen_height = monitor.geometry().height() as f64;
-
     let wallpaper_path = config.assets_dir.to_owned() + "/background.png";
+
     drawing_area.set_draw_func(move |_, cr, width, height| {
         let file = gio::File::for_path(&wallpaper_path);
         let mut stream = file.read(None::<&gio::Cancellable>).unwrap().into_read();
@@ -433,31 +228,6 @@ pub fn background_widget(config: &Config, monitor: &Monitor) -> gtk::Box {
         cr.set_source_surface(surface, x, y).unwrap();
         cr.paint().unwrap();
     });
-
-    let background_overlay = gtk::Box::builder()
-        .css_name("BoxBackgroundOverlay")
-        .vexpand(true)
-        .hexpand(true)
-        .build();
-
-    container.append(&background_overlay);
-
-    container
-}
-
-pub fn wrapper_box(background_widget: &gtk::Box, content_box: &gtk::Box) -> gtk::Box {
-    let container = gtk::Box::builder()
-        .layout_manager(&gtk::BinLayout::new())
-        .width_request(500)
-        .height_request(800)
-        .halign(gtk::Align::Center)
-        .valign(gtk::Align::Center)
-        .build();
-
-    container.append(background_widget);
-    container.append(content_box);
-
-    container
 }
 
 pub fn root_window() -> gtk::Window {

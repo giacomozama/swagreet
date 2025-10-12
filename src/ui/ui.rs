@@ -1,13 +1,15 @@
 use std::fs::read_to_string;
 use std::path::Path;
+use std::process::Command;
 use std::time::Duration;
 
 use gio::glib::{self};
 use gtk::{gdk, prelude::*};
-use relm4::{Component, ComponentController, ComponentParts, SimpleComponent};
+use relm4::{Component, ComponentParts, SimpleComponent, prelude::*};
 
 use crate::model::model::*;
 use crate::widgets::widgets::*;
+use crate::widgets::widgets::{dummy_window, login_state_page_name, main_stack_page_name};
 
 fn load_css_and_icons(display: &gdk::Display, config: &Config, users: &[User]) {
     gtk::IconTheme::for_display(display)
@@ -75,6 +77,9 @@ pub struct AppWidgets {
     user_button_label: gtk::Label,
     login_button: gtk::Button,
     too_many_attempts_label: gtk::Label,
+    suspend_button: gtk::Button,
+    restart_button: gtk::Button,
+    shutdown_button: gtk::Button,
 }
 
 impl SimpleComponent for AppModel {
@@ -125,50 +130,7 @@ impl SimpleComponent for AppModel {
             login_command,
         };
 
-        let session_button_logo = session_logo(&initial_session.icon_name);
-        let session_button_label = gtk::Label::new(Some(&initial_session.name));
-        let session_button_content = session_item(&session_button_logo, &session_button_label);
-        let session_button = session_button(&session_button_content, &sender);
-
-        let user_button_avatar = user_avatar(&model.username);
-        let user_button_label = gtk::Label::new(Some(&model.username));
-        let user_button_content = user_item(&user_button_avatar, &user_button_label);
-        let user_button = user_button(&user_button_content, &sender);
-
-        let too_many_attempts_label = gtk::Label::new(None);
-        let login_button_stack = login_button_stack(&too_many_attempts_label);
-        let login_button = login_button(&login_button_stack, &sender);
-
-        let password_entry = password_entry(&sender);
-
-        let login_form = login_form(
-            &session_button,
-            &user_button,
-            &password_entry,
-            &login_button,
-        );
-
-        let main_stack = main_stack(&model.config.sessions, &users, &login_form, &sender);
-        let wrapper_box = wrapper_box(
-            &background_widget(&model.config, &main_monitor),
-            &content_box(&main_stack),
-        );
-
-        root.set_child(Some(&wrapper_box));
-
-        let widgets = AppWidgets {
-            main_stack,
-            login_button_stack,
-            password_entry,
-            session_button,
-            session_button_logo,
-            session_button_label,
-            user_button,
-            user_button_avatar,
-            user_button_label,
-            login_button,
-            too_many_attempts_label,
-        };
+        let builder = gtk::Builder::from_file(config.assets_dir.to_owned() + "/layout.ui");
 
         for monitor in monitors {
             if monitor.connector() != main_monitor.connector() {
@@ -178,7 +140,92 @@ impl SimpleComponent for AppModel {
             }
         }
 
+        let widgets = AppWidgets {
+            main_stack: builder.object("main_stack").unwrap(),
+            login_button_stack: builder.object("login_button_stack").unwrap(),
+            password_entry: builder.object("password_entry").unwrap(),
+            session_button: builder.object("session_button").unwrap(),
+            session_button_logo: builder.object("session_button_logo").unwrap(),
+            session_button_label: builder.object("session_button_label").unwrap(),
+            user_button: builder.object("user_button").unwrap(),
+            user_button_avatar: builder.object("user_button_avatar").unwrap(),
+            user_button_label: builder.object("user_button_label").unwrap(),
+            login_button: builder.object("login_button").unwrap(),
+            too_many_attempts_label: builder.object("too_many_attempts_label").unwrap(),
+            suspend_button: builder.object("suspend_button").unwrap(),
+            restart_button: builder.object("restart_button").unwrap(),
+            shutdown_button: builder.object("shutdown_button").unwrap(),
+        };
+
+        let wrapper_box = builder.object::<gtk::Widget>("wrapper_box").unwrap();
+
+        let background_drawing_area = builder
+            .object::<gtk::DrawingArea>("background_drawing_area")
+            .unwrap();
+
+        setup_background_drawing_area(&background_drawing_area, &config, &main_monitor);
+
+        setup_main_stack(&widgets.main_stack, &config.sessions, &users, &sender);
+
+        setup_login_button_stack(
+            &widgets.login_button_stack,
+            &widgets.too_many_attempts_label,
+        );
+
+        setup_password_entry(&widgets.password_entry, &sender);
+
+        widgets.login_button.connect_clicked({
+            let sender = sender.clone();
+            move |_| {
+                sender.input(AppAction::ChangeLoginState(LoginState::LoggingIn));
+            }
+        });
+
+        widgets.session_button.connect_clicked({
+            let sender = sender.clone();
+            move |_| sender.input(AppAction::ChangeMainStackPage(MainStackPage::ChooseSession))
+        });
+
+        widgets.user_button.connect_clicked({
+            let sender = sender.clone();
+            move |_| sender.input(AppAction::ChangeMainStackPage(MainStackPage::ChooseUser))
+        });
+
+        widgets.suspend_button.connect_clicked(move |_| {
+            Command::new("/bin/systemctl")
+                .args(["suspend"])
+                .output()
+                .expect("Failed to execute command");
+        });
+
+        widgets.restart_button.connect_clicked(move |_| {
+            Command::new("/bin/reboot")
+                .output()
+                .expect("Failed to execute command");
+        });
+
+        widgets.shutdown_button.connect_clicked(move |_| {
+            Command::new("/bin/shutdown")
+                .args(["now"])
+                .output()
+                .expect("Failed to execute command");
+        });
+
+        root.set_child(Some::<&gtk::Widget>(&wrapper_box));
+
         root.present();
+
+        widgets
+            .user_button_avatar
+            .set_css_classes(&["avatar", &("avatar-".to_owned() + &model.username)]);
+
+        widgets.user_button_label.set_label(&model.username);
+
+        widgets
+            .session_button_logo
+            .set_icon_name(Some(&model.session.icon_name));
+
+        widgets.session_button_label.set_label(&model.session.name);
 
         ComponentParts { model, widgets }
     }

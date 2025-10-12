@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"></requires>
+    <object class="GtkBox" id="wrapper_box">
+        <style>
+            <class name="wrapper-box" />
+        </style>
+        <property name="orientation">vertical</property>
+        <property name="width-request">500</property>
+        <property name="height-request">800</property>
+        <property name="valign">center</property>
+        <property name="halign">center</property>
+        <property name="layout-manager">
+            <object class="GtkBinLayout" />
+        </property>
+        <child>
+            <object class="GtkBox" id="background_box">
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="overflow">hidden</property>
+                <property name="css-name">BoxBackgroundContainer</property>
+                <property name="layout-manager">
+                    <object class="GtkBinLayout" />
+                </property>
+                <child>
+                    <object class="GtkDrawingArea" id="background_drawing_area">
+                        <property name="hexpand">true</property>
+                        <property name="vexpand">true</property>
+                        <property name="css-name">BoxBackground</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox">
+                        <property name="hexpand">true</property>
+                        <property name="vexpand">true</property>
+                        <property name="css-name">BoxBackgroundOverlay</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="css-name">ContentBox</property>
+                <style>
+                    <class name="content-box" />
+                </style>
+                <child>
+                    <object class="GtkImage">
+                        <property name="icon-name">main-logo</property>
+                        <property name="pixel-size">72</property>
+                        <style>
+                            <class name="logo" />
+                        </style>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox">
+                        <property name="vexpand">true</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkStack" id="main_stack">
+                        <property name="transition-type">crossfade</property>
+                        <property name="transition-duration">125</property>
+                        <child>
+                            <object class="GtkStackPage">
+                                <property name="name">login</property>
+                                <property name="child">
+                                    <object class="GtkBox" id="login_form">
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">12</property>
+                                        <style>
+                                            <class name="login-form" />
+                                        </style>
+                                        <child>
+                                            <object class="GtkButton" id="session_button">
+                                                <property name="cursor">
+                                                    <object class="GdkCursor">
+                                                        <property name="name">pointer</property>
+                                                    </object>
+                                                </property>
+                                                <property name="child">
+                                                    <object class="GtkBox">
+                                                        <child>
+                                                            <object class="GtkImage"
+                                                                id="session_button_logo">
+                                                                <property name="pixel-size">24</property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel"
+                                                                id="session_button_label">
+                                                                <property name="hexpand">true</property>
+                                                            </object>
+                                                        </child>
+                                                        <style>
+                                                            <class name="session-item" />
+                                                        </style>
+                                                    </object>
+                                                </property>
+                                                <style>
+                                                    <class name="pill" />
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkBox">
+                                                <property name="halign">center</property>
+                                                <property name="css-name">separator</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkButton" id="user_button">
+                                                <property name="cursor">
+                                                    <object class="GdkCursor">
+                                                        <property name="name">pointer</property>
+                                                    </object>
+                                                </property>
+                                                <property name="child">
+                                                    <object class="GtkBox">
+                                                        <child>
+                                                            <object class="GtkBox"
+                                                                id="user_button_avatar">
+                                                                <property name="width-request">40</property>
+                                                                <property name="height-request">40</property>
+                                                                <property name="halign">start</property>
+                                                                <property name="valign">center</property>
+                                                                <style>
+                                                                    <class name="avatar" />
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel"
+                                                                id="user_button_label">
+                                                                <property name="hexpand">true</property>
+                                                            </object>
+                                                        </child>
+                                                        <style>
+                                                            <class name="user-item" />
+                                                        </style>
+                                                    </object>
+                                                </property>
+                                                <style>
+                                                    <class name="pill" />
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkPasswordEntry" id="password_entry">
+                                                <property name="placeholder-text">Password</property>
+                                                <property name="xalign">0.5</property>
+                                                <style>
+                                                    <class name="pill" />
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkBox">
+                                                <property name="halign">center</property>
+                                                <property name="css-name">separator</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkButton" id="login_button">
+                                                <style>
+                                                    <class name="pill" />
+                                                </style>
+                                                <property name="cursor">
+                                                    <object class="GdkCursor">
+                                                        <property name="name">pointer</property>
+                                                    </object>
+                                                </property>
+                                                <property name="child">
+                                                    <object class="GtkStack" id="login_button_stack">
+                                                        <child>
+                                                            <object class="GtkStackPage">
+                                                                <property name="name">waiting</property>
+                                                                <property name="child">
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label">Login</property>
+                                                                    </object>
+                                                                </property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkStackPage">
+                                                                <property name="name">
+                                                                    too_many_attempts</property>
+                                                                <property name="child">
+                                                                    <object class="GtkLabel"
+                                                                        id="too_many_attempts_label" />
+                                                                </property>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox">
+                        <property name="vexpand">true</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox">
+                        <property name="spacing">24</property>
+                        <property name="halign">end</property>
+                        <style>
+                            <class name="bottom-buttons-row" />
+                        </style>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <style>
+                                    <class name="button-container" />
+                                </style>
+                                <child>
+                                    <object class="GtkButton" id="suspend_button">
+                                        <property name="cursor">
+                                            <object class="GdkCursor">
+                                                <property name="name">pointer</property>
+                                            </object>
+                                        </property>
+                                        <property name="icon-name">system-suspend-symbolic</property>
+                                        <style>
+                                            <class name="circular" />
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Suspend</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <style>
+                                    <class name="button-container" />
+                                </style>
+                                <child>
+                                    <object class="GtkButton" id="restart_button">
+                                        <property name="cursor">
+                                            <object class="GdkCursor">
+                                                <property name="name">pointer</property>
+                                            </object>
+                                        </property>
+                                        <property name="icon-name">system-reboot-symbolic</property>
+                                        <style>
+                                            <class name="circular" />
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Restart</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <style>
+                                    <class name="button-container" />
+                                </style>
+                                <child>
+                                    <object class="GtkButton" id="shutdown_button">
+                                        <property name="cursor">
+                                            <object class="GdkCursor">
+                                                <property name="name">pointer</property>
+                                            </object>
+                                        </property>
+                                        <property name="icon-name">system-shutdown-symbolic</property>
+                                        <style>
+                                            <class name="circular" />
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Shutdown</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>
