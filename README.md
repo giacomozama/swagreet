@@ -1,13 +1,14 @@
-# swagreet
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./logo_dark.svg" width="300">
+    <source media="(prefers-color-scheme: light)" srcset="./logo_light.svg" width="300">
+    <img alt="swagreet" src="./logo_dark.svg" width="300">
+  </picture>
+</p>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./logo_dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="./logo_light.svg">
-  <img alt="swagreet" src="./logo_dark.svg">
-</picture>
-
-
-swagreet is an aesthetics-focused graphical greetd greeter written in Rust using GTK4 and Relm4.
+<p align="center">
+  swagreet is an aesthetics-focused graphical greetd greeter written in Rust using GTK4 and Relm4.
+</p>
 
 ## Installation
 
