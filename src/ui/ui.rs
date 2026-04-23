@@ -167,10 +167,7 @@ impl SimpleComponent for AppModel {
 
         setup_main_stack(&widgets.main_stack, &config.sessions, &users, &sender);
 
-        setup_login_button_stack(
-            &widgets.login_button_stack,
-            &widgets.too_many_attempts_label,
-        );
+        widgets.login_button_stack.set_visible_child_name("login");
 
         setup_password_entry(&widgets.password_entry, &sender);
 

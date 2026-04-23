@@ -2,44 +2,6 @@ use crate::model::model::{AppAction, AppModel, Config, LoginState, MainStackPage
 
 use gtk::{gdk::Monitor, prelude::*};
 
-pub fn setup_login_button_stack(
-    login_button_stack: &gtk::Stack,
-    too_many_attempts_label: &gtk::Label,
-) {
-    login_button_stack.add_named(&gtk::Label::new(Some("Login")), Some("login"));
-
-    login_button_stack.add_named(&gtk::Label::new(Some("Please wait…")), Some("logging_in"));
-
-    login_button_stack.add_named(
-        &gtk::Label::new(Some("Couldn't create session")),
-        Some("create_session_error"),
-    );
-
-    login_button_stack.add_named(
-        &gtk::Label::new(Some("Wrong password")),
-        Some("auth_failed"),
-    );
-
-    login_button_stack.add_named(
-        &gtk::Label::new(Some("Couldn't start session")),
-        Some("start_session_error"),
-    );
-
-    login_button_stack.add_named(
-        &gtk::Label::new(Some("Starting session…")),
-        Some("starting_session"),
-    );
-
-    login_button_stack.add_named(
-        &gtk::Label::new(Some("Unknown error")),
-        Some("unknown_error"),
-    );
-
-    login_button_stack.add_named(too_many_attempts_label, Some("too_many_attempts"));
-
-    login_button_stack.set_visible_child_name("login");
-}
-
 pub fn login_state_page_name(state: &LoginState) -> String {
     match state {
         LoginState::Waiting => "login",

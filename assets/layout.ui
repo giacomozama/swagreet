@@ -176,12 +176,77 @@
                                                 </property>
                                                 <property name="child">
                                                     <object class="GtkStack" id="login_button_stack">
+                                                        <property name="transition-type">crossfade</property>
+                                                        <property name="transition-duration">125</property>
                                                         <child>
                                                             <object class="GtkStackPage">
-                                                                <property name="name">waiting</property>
+                                                                <property name="name">login</property>
                                                                 <property name="child">
                                                                     <object class="GtkLabel">
-                                                                        <property name="label">Login</property>
+                                                                        <property name="label"><![CDATA[Login]]></property>
+                                                                    </object>
+                                                                </property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkStackPage">
+                                                                <property name="name">logging_in</property>
+                                                                <property name="child">
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label"><![CDATA[Please wait…]]></property>
+                                                                    </object>
+                                                                </property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkStackPage">
+                                                                <property name="name">
+                                                                    create_session_error</property>
+                                                                <property name="child">
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label"><![CDATA[Couldn't create session]]></property>
+                                                                    </object>
+                                                                </property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkStackPage">
+                                                                <property name="name">auth_failed</property>
+                                                                <property name="child">
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label"><![CDATA[Wrong password]]></property>
+                                                                    </object>
+                                                                </property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkStackPage">
+                                                                <property name="name">
+                                                                    start_session_error</property>
+                                                                <property name="child">
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label"><![CDATA[Couldn't start session]]></property>
+                                                                    </object>
+                                                                </property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkStackPage">
+                                                                <property name="name">
+                                                                    starting_session</property>
+                                                                <property name="child">
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label"><![CDATA[Starting session…]]></property>
+                                                                    </object>
+                                                                </property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkStackPage">
+                                                                <property name="name">unknown_error</property>
+                                                                <property name="child">
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label"><![CDATA[Unknown error]]></property>
                                                                     </object>
                                                                 </property>
                                                             </object>
