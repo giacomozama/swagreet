@@ -63,7 +63,8 @@ pub struct Config {
     pub monitor_order: Vec<String>,
     pub maximum_attempts: u16,
     pub maximum_attempts_timeout_seconds: u16,
-    pub users: Option<Vec<User>>
+    pub users: Option<Vec<User>>,
+    pub ignored_sessions: Option<Vec<String>>,
 }
 
 pub struct LoginCommandModel {}
@@ -124,7 +125,7 @@ fn parse_desktop_file(path: &Path) -> Option<Session> {
     }
 }
 
-pub fn get_wayland_sessions() -> Vec<Session> {
+pub fn get_wayland_sessions(ignored_sessions: Option<&Vec<String>>) -> Vec<Session> {
     let mut sessions = Vec::new();
     let path = Path::new("/usr/share/wayland-sessions");
     if let Ok(entries) = fs::read_dir(path) {
@@ -132,6 +133,11 @@ pub fn get_wayland_sessions() -> Vec<Session> {
             let path = entry.path();
             if path.extension().and_then(|s| s.to_str()) == Some("desktop") {
                 if let Some(session) = parse_desktop_file(&path) {
+                    if let Some(ignored) = ignored_sessions {
+                        if ignored.contains(&session.name) {
+                            continue;
+                        }
+                    }
                     sessions.push(session);
                 }
             }

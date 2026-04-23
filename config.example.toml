@@ -30,3 +30,9 @@ monitor_order = ["WL-1", "DP-1", "HDMI-A-1"]
 #     { name = "example_1", avatar_path = "/path/to/avatar_1.png" },
 #     { name = "example_2", avatar_path = "/path/to/avatar_2.png" },
 # ]
+
+### SESSIONS
+
+# list of session names to ignore
+# - these will not be displayed in the session menu
+# ignored_sessions = ["Hyprland", "GNOME"]

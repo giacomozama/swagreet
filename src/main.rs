@@ -64,7 +64,7 @@ fn main() {
         .users
         .to_owned()
         .unwrap_or(get_account_service_users());
-    let sessions = get_wayland_sessions();
+    let sessions = get_wayland_sessions(config.ignored_sessions.as_ref());
     let app = Application::builder().application_id(APP_ID).build();
 
     relm4::RelmApp::from_app(app)
