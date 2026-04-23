@@ -36,3 +36,7 @@ monitor_order = ["WL-1", "DP-1", "HDMI-A-1"]
 # list of session names to ignore
 # - these will not be displayed in the session menu
 # ignored_sessions = ["Hyprland", "GNOME"]
+
+# default session name
+# - this session will be selected by default
+# default_session = "Hyprland"

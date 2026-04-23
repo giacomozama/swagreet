@@ -65,6 +65,7 @@ pub struct Config {
     pub maximum_attempts_timeout_seconds: u16,
     pub users: Option<Vec<User>>,
     pub ignored_sessions: Option<Vec<String>>,
+    pub default_session: Option<String>,
 }
 
 pub struct LoginCommandModel {}

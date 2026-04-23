@@ -123,7 +123,12 @@ impl SimpleComponent for AppModel {
         let main_monitor = select_monitor(&config, &monitors);
         root.fullscreen_on_monitor(&main_monitor);
 
-        let initial_session = sessions.get(0).expect("No sessions found").to_owned();
+        let initial_session = config
+            .default_session
+            .as_ref()
+            .and_then(|default| sessions.iter().find(|s| &s.name == default))
+            .cloned()
+            .unwrap_or_else(|| sessions.get(0).expect("No sessions found").to_owned());
 
         let login_command = LoginCommandModel::builder()
             .launch(())
