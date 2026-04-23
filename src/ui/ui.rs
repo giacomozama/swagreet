@@ -85,7 +85,7 @@ pub struct AppWidgets {
 impl SimpleComponent for AppModel {
     type Input = AppAction;
     type Output = ();
-    type Init = (Config, Vec<User>);
+    type Init = (Config, Vec<User>, Vec<Session>);
     type Root = gtk::Window;
     type Widgets = AppWidgets;
 
@@ -99,9 +99,20 @@ impl SimpleComponent for AppModel {
         sender: relm4::ComponentSender<Self>,
     ) -> relm4::ComponentParts<Self> {
         let display = gdk::Display::default().unwrap();
-        let (config, users) = init;
+        let (config, users, sessions) = init;
 
         load_css_and_icons(&display, &config, &users);
+
+        let icon_theme = gtk::IconTheme::for_display(&display);
+        let sessions: Vec<Session> = sessions
+            .into_iter()
+            .map(|mut s| {
+                if !icon_theme.has_icon(&s.icon_name) {
+                    s.icon_name = "video-display-symbolic".to_string();
+                }
+                s
+            })
+            .collect();
 
         let monitors = display
             .monitors()
@@ -112,7 +123,7 @@ impl SimpleComponent for AppModel {
         let main_monitor = select_monitor(&config, &monitors);
         root.fullscreen_on_monitor(&main_monitor);
 
-        let initial_session = config.sessions.get(0).unwrap();
+        let initial_session = sessions.get(0).expect("No sessions found").to_owned();
 
         let login_command = LoginCommandModel::builder()
             .launch(())
@@ -165,7 +176,7 @@ impl SimpleComponent for AppModel {
 
         setup_background_drawing_area(&background_drawing_area, &config, &main_monitor);
 
-        setup_main_stack(&widgets.main_stack, &config.sessions, &users, &sender);
+        setup_main_stack(&widgets.main_stack, &sessions, &users, &sender);
 
         widgets.login_button_stack.set_visible_child_name("login");
 

@@ -22,14 +22,6 @@ maximum_attempts_timeout_seconds = 60
 # - other monitors will still show the background image
 monitor_order = ["WL-1", "DP-1", "HDMI-A-1"]
 
-### SESSIONS
-
-# sessions which will be shown in the sessions menu
-sessions = [
-    { name = "Hyprland", icon_name =  "hyprland-logo", command = ["Hyprland"], env = [] },
-    { name = "GNOME", icon_name = "gnome-logo", command = ["gnome-session"], env = ["XDG_SESSION_TYPE=wayland"] }
-]
-
 ### USERS
 
 # Leave commented if you want to automatically detect AccountService users

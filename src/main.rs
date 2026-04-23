@@ -64,10 +64,11 @@ fn main() {
         .users
         .to_owned()
         .unwrap_or(get_account_service_users());
+    let sessions = get_wayland_sessions();
     let app = Application::builder().application_id(APP_ID).build();
 
     relm4::RelmApp::from_app(app)
         .with_args(Vec::new())
         .visible_on_activate(false)
-        .run::<AppModel>((config, users));
+        .run::<AppModel>((config, users, sessions));
 }
